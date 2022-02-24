@@ -1,6 +1,7 @@
 package com.littleo.blog.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.littleo.blog.dao.mapper.ArticleBodyMapper;
 import com.littleo.blog.dao.mapper.ArticleMapper;
@@ -43,6 +44,19 @@ public class ArticleSercviceImpl implements ArticleService {
     private ArticleTagMapper articleTagMapper;
 
 
+    @Override
+    public Result listArticle(PageParams pageParams) {
+        Page<Article> page = new Page<>(pageParams.getPage(),pageParams.getPagesize());
+        IPage<Article> articleIPage = articleMapper.listArticle(page,
+                pageParams.getCategoryId(),
+                pageParams.getTagId(),
+                pageParams.getYear(),
+                pageParams.getMonth());
+        return Result.success(copyList(articleIPage.getRecords(),true,true));
+
+    }
+
+
    /* @Override
     public Result listArticle(PageParams params) {
         *//**
@@ -66,11 +80,11 @@ public class ArticleSercviceImpl implements ArticleService {
     }
 */
 
-    @Override
+   /* @Override
     public Result listArticle(PageParams pageParams) {
-        /**
+        *//**
          * 1. 分页查询 article数据库表
-         */
+         *//*
         Page<Article> page = new Page<>(pageParams.getPage(), pageParams.getPagesize());
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
         if (pageParams.getCategoryId() != null) {
@@ -97,7 +111,7 @@ public class ArticleSercviceImpl implements ArticleService {
         //能直接返回吗？ 很明显不能
         List<ArticleVo> articleVoList = copyList(records,true,true);
         return Result.success(articleVoList);
-    }
+    }*/
     /**
      * 最新文章
      * @param limit
