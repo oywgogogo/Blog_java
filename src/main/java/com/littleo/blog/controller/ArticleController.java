@@ -2,6 +2,7 @@ package com.littleo.blog.controller;
 
 
 import com.littleo.blog.common.aop.LogAnnotation;
+import com.littleo.blog.common.cache.Cache;
 import com.littleo.blog.service.ArticleService;
 import com.littleo.blog.vo.params.ArticleParam;
 import com.littleo.blog.vo.params.ArticleVo;
@@ -25,6 +26,7 @@ public class ArticleController {
 
     //最热文章
     @PostMapping("hot")
+    @Cache(expire = 5 * 60 * 1000,name = "hot_article")
     public Result hotArtilces(){
         int limit = 5;
         return articleService.hotArticle(limit);
@@ -32,6 +34,7 @@ public class ArticleController {
 
     //最新文章
     @PostMapping("new")
+    @Cache(expire = 5 * 60 * 1000,name = "new_article")
     public Result newArtilces(){
         int limit = 5;
         return articleService.newArticle(limit);

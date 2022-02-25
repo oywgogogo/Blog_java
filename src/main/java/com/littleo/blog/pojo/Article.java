@@ -29,6 +29,7 @@ public class Article {
     /**
      * 作者id
      */
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long authorId;
     /**
      * 内容id

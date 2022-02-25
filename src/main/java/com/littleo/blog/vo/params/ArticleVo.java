@@ -43,4 +43,10 @@ public class ArticleVo {
 
     private CategoryVo category;
 
+    /**
+     * 作者id
+     */
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long authorId;
+
 }
