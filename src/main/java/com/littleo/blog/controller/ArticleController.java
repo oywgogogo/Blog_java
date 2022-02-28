@@ -61,4 +61,19 @@ public class ArticleController {
     public Result publish(@RequestBody ArticleParam articleParam){
         return articleService.publish(articleParam);
     }
+
+    //modify
+    //查看需要的修改文章
+    @PostMapping("{id}")
+    public Result modify(@PathVariable("id") Long id){
+        return articleService.modify(id);
+    }
+
+
+    //发修改文章
+    @PostMapping("update")
+    public Result update(@RequestBody ArticleParam articleParam){
+        return articleService.update(articleParam);
+    }
+
 }

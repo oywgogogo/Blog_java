@@ -50,5 +50,7 @@ public class Article {
      * 创建时间
      */
     private Long createDate;
+
+
 }
 

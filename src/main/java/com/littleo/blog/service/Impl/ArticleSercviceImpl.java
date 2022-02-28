@@ -1,19 +1,18 @@
 package com.littleo.blog.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.littleo.blog.dao.mapper.ArticleBodyMapper;
 import com.littleo.blog.dao.mapper.ArticleMapper;
 import com.littleo.blog.dao.mapper.ArticleTagMapper;
 import com.littleo.blog.dos.Archives;
-import com.littleo.blog.pojo.Article;
-import com.littleo.blog.pojo.ArticleBody;
-import com.littleo.blog.pojo.ArticleTag;
-import com.littleo.blog.pojo.SysUser;
+import com.littleo.blog.pojo.*;
 import com.littleo.blog.service.*;
 import com.littleo.blog.utils.UserThreadLocal;
 import com.littleo.blog.vo.ArticleBodyVo;
+import com.littleo.blog.vo.CategoryVo;
 import com.littleo.blog.vo.params.*;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
@@ -42,6 +41,7 @@ public class ArticleSercviceImpl implements ArticleService {
     private SysUserService sysUserService;
     @Autowired
     private ArticleTagMapper articleTagMapper;
+
 
 
     @Override
@@ -158,7 +158,9 @@ public class ArticleSercviceImpl implements ArticleService {
 
         Article article = this.articleMapper.selectById(ArticleId);
         ArticleVo articleVo  = copy(article,true,true,true,true);
-
+        LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
+        SysUser sysUser = sysUserService.findUserById(articleVo.getAuthorId());
+        articleVo.setAvatar(sysUser.getAvatar());
         threadService.updateArticleViewCount(articleMapper,article);
         return articleVo;
     }
@@ -236,6 +238,66 @@ public class ArticleSercviceImpl implements ArticleService {
         articleVo.setId(article.getId());
         return Result.success(articleVo);
     }
+
+
+    //查看需要的修改文章
+    @Override
+    public Result modify(Long id) {
+        Article article = this.articleMapper.selectById(id);
+        CategoryVo categoryVo = this.categoryService.findCategoryById(article.getCategoryId());
+        List<TagVo> tags = this.tagService.findTagsByArticleId(article.getId());
+        ArticleParam articleParam = new ArticleParam();
+        ArticleBody articleBody = this.articleBodyMapper.selectById(article.getBodyId());
+        ArticleBodyParam articleBodyParam = new ArticleBodyParam();
+        BeanUtils.copyProperties(articleBody,articleBodyParam);
+        articleParam.setId(article.getId());
+        articleParam.setCategory(categoryVo);
+        articleParam.setTags(tags);
+        articleParam.setSummary(article.getSummary());
+        articleParam.setTitle(article.getTitle());
+        articleParam.setBody(articleBodyParam);
+        articleParam.setBodyId(article.getBodyId());
+        return Result.success(articleParam);
+    }
+
+    /**
+     * 修改文章
+     * @param articleParam
+     * @return
+     */
+    @Override
+    public Result update(ArticleParam articleParam) {
+        LambdaUpdateWrapper<Article> updateWrapper = new LambdaUpdateWrapper();
+        updateWrapper.eq(Article::getId,articleParam.getId());
+        updateWrapper.set(Article::getSummary,articleParam.getSummary());
+        updateWrapper.set(Article::getTitle,articleParam.getTitle());
+        Integer rows = articleMapper.update(null,updateWrapper);
+        System.out.println(rows+"-------------------------------");
+        LambdaUpdateWrapper<ArticleBody> bodyUpdateWrapper = new LambdaUpdateWrapper();
+        bodyUpdateWrapper.eq(ArticleBody::getId,articleParam.getBodyId());
+        bodyUpdateWrapper.set(ArticleBody::getContent,articleParam.getBody().getContent());
+        bodyUpdateWrapper.set(ArticleBody::getContentHtml,articleParam.getBody().getContentHtml());
+        Integer body_row = articleBodyMapper.update(null,bodyUpdateWrapper);
+        System.out.println(body_row+"----------------------------------");
+        LambdaQueryWrapper<ArticleTag> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ArticleTag::getArticleId,articleParam.getId());
+        int tag_row  = articleTagMapper.delete(queryWrapper);
+        System.out.println(tag_row+"-----------------------------");
+        //tags
+        List<TagVo> tags = articleParam.getTags();
+        if (tags != null) {
+            for (TagVo tag : tags) {
+                ArticleTag articleTag = new ArticleTag();
+                articleTag.setArticleId(articleParam.getId());
+                articleTag.setTagId(tag.getId());
+                this.articleTagMapper.insert(articleTag);
+            }
+        }
+        ArticleVo articleVo = new ArticleVo();
+        articleVo.setId(articleParam.getId());
+        return Result.success(articleVo);
+    }
+
     //最热文章
     @Override
     public Result hotArticle(int limit) {

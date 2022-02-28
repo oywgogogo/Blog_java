@@ -49,4 +49,6 @@ public class ArticleVo {
     @JsonSerialize(using = ToStringSerializer.class)
     private Long authorId;
 
+    private String avatar;
+
 }

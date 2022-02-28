@@ -1,7 +1,6 @@
 package com.littleo.blog.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.littleo.blog.dao.mapper.CategoryMapper;
 import com.littleo.blog.pojo.Category;
 import com.littleo.blog.service.CategoryService;

@@ -46,4 +46,12 @@ public interface ArticleService {
     Result publish(ArticleParam articleParam);
 
 
+    Result modify(Long id);
+
+    /**
+     * 修改文章
+     * @param articleParam
+     * @return
+     */
+    Result update(ArticleParam articleParam);
 }
