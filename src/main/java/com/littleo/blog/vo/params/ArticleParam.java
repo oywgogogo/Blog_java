@@ -12,7 +12,7 @@ public class ArticleParam {
 
 
     @JsonSerialize(using = ToStringSerializer.class)
-    private Long id;
+    private String id;
 
     private ArticleBodyParam body;
 
@@ -25,5 +25,5 @@ public class ArticleParam {
     private String title;
 
     @JsonSerialize(using = ToStringSerializer.class)
-    private Long bodyId;
+    private String bodyId;
 }

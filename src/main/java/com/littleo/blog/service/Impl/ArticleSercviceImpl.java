@@ -131,6 +131,19 @@ public class ArticleSercviceImpl implements ArticleService {
         return Result.success(copyList(articleList,false,false));
     }
 
+    //最热文章
+    @Override
+    public Result hotArticle(int limit) {
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper();
+        //select id,title from Article order by view_counts desc limit 5;
+        queryWrapper.orderByDesc(Article::getViewCounts);
+        queryWrapper.select(Article::getId,Article::getTitle);
+        queryWrapper.last("limit "+limit);
+
+        List<Article> articleList = articleMapper.selectList(queryWrapper);
+
+        return Result.success(copyList(articleList,false,false));
+    }
     /**
      * 文章归档
      * @return
@@ -213,7 +226,7 @@ public class ArticleSercviceImpl implements ArticleService {
         article.setTitle(articleParam.getTitle());
         article.setViewCounts(0);
         article.setWeight(Article.Article_Common);
-        article.setBodyId(-1L);
+//        article.setBodyId();
         this.articleMapper.insert(article);
 
         //tags
@@ -298,19 +311,7 @@ public class ArticleSercviceImpl implements ArticleService {
         return Result.success(articleVo);
     }
 
-    //最热文章
-    @Override
-    public Result hotArticle(int limit) {
-        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper();
-        //select id,title from Article order by view_counts desc limit 5;
-        queryWrapper.orderByDesc(Article::getViewCounts);
-        queryWrapper.select(Article::getId,Article::getTitle);
-        queryWrapper.last("limit "+limit);
 
-        List<Article> articleList = articleMapper.selectList(queryWrapper);
-
-        return Result.success(copyList(articleList,false,false));
-    }
 
 
     //复制list型参数
@@ -343,7 +344,7 @@ public class ArticleSercviceImpl implements ArticleService {
         articleVo.setCreateDate(new DateTime(article.getCreateDate()).toString("yyyy-MM-dd HH:mm"));
         //判断是否需要标签和作者信息
         if(isTag){
-            Long articleId = article.getId();
+            String articleId = article.getId();
             articleVo.setTags(tagService.findTagsByArticleId(articleId));
         }
         if (isAuthor){
@@ -351,7 +352,7 @@ public class ArticleSercviceImpl implements ArticleService {
             articleVo.setAuthor(sysUserService.findUserById(authorId).getNickname());
         }
         if (isBody){
-            Long bodyId = article.getBodyId();
+            String bodyId = article.getBodyId();
             articleVo.setBody(findArticleBodyById(bodyId));
         }
         if (isCategory){
@@ -366,7 +367,7 @@ public class ArticleSercviceImpl implements ArticleService {
     //查看文章
     @Autowired
     private ArticleBodyMapper articleBodyMapper;
-    private ArticleBodyVo findArticleBodyById(Long bodyId) {
+    private ArticleBodyVo findArticleBodyById(String bodyId) {
         ArticleBody articleBody = articleBodyMapper.selectById(bodyId);
         ArticleBodyVo articleBodyVo = new ArticleBodyVo();
         articleBodyVo.setContent(articleBody.getContent());

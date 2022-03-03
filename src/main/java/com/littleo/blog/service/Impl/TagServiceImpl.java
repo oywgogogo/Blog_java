@@ -79,7 +79,7 @@ public class TagServiceImpl implements TagService {
 
     //获取标签
     @Override
-    public List<TagVo> findTagsByArticleId(Long id) {
+    public List<TagVo> findTagsByArticleId(String id) {
         List<Tag> tags = tagMapper.findTagsByArticleId(id);
         return copyList(tags);
     }

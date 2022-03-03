@@ -7,7 +7,7 @@ public class ArticleTag {
 
     private Long id;
 
-    private Long articleId;
+    private String articleId;
 
     private Long tagId;
 }

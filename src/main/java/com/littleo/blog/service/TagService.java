@@ -10,7 +10,7 @@ import java.util.List;
  * @Date 2021/12/27 17:40
  */
 public interface TagService {
-    List<TagVo> findTagsByArticleId(Long articleId);
+    List<TagVo> findTagsByArticleId(String articleId);
 
     Result hots(int limit);
 

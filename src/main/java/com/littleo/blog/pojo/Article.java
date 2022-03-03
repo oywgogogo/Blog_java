@@ -16,7 +16,7 @@ public class Article {
 
 
     @JsonSerialize(using = ToStringSerializer.class)
-    private Long id;
+    private String id;
 
     private String title;
 
@@ -34,7 +34,7 @@ public class Article {
     /**
      * 内容id
      */
-    private Long bodyId;
+    private String bodyId;
     /**
      *类别id
      */
