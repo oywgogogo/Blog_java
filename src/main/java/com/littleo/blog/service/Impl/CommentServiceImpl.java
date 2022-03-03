@@ -1,7 +1,9 @@
 package com.littleo.blog.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.littleo.blog.dao.mapper.ArticleMapper;
 import com.littleo.blog.dao.mapper.CommentMapper;
+import com.littleo.blog.pojo.Article;
 import com.littleo.blog.pojo.Comment;
 import com.littleo.blog.pojo.SysUser;
 import com.littleo.blog.service.CommentService;
@@ -31,6 +33,8 @@ public class CommentServiceImpl implements CommentService {
     private CommentMapper commentMapper;
     @Autowired
     private SysUserService sysUserService;
+    @Autowired
+    private ArticleMapper articleMapper;
 
 
     //根据文章id查询评论列表
@@ -69,6 +73,15 @@ public class CommentServiceImpl implements CommentService {
         Long toUserId = commentParam.getToUserId();
         comment.setToUid(toUserId == null ? 0 : toUserId);
         this.commentMapper.insert(comment);
+
+        Article article = articleMapper.selectById(commentParam.getArticleId());
+        int commentCount = article.getCommentCounts();
+        Article article1 = new Article();
+        LambdaQueryWrapper<Article> updateWrapper = new LambdaQueryWrapper<>();
+        article1.setCommentCounts(commentCount+1);
+        updateWrapper.eq(Article::getCommentCounts,article.getCommentCounts());
+        updateWrapper.eq(Article::getId,commentParam.getArticleId());
+        articleMapper.update(article1,updateWrapper);
         return Result.success(null);
     }
 
