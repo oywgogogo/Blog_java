@@ -2,9 +2,9 @@ spring:
   datasource:
     #    驱动
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/blog?useSSL=true&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-    password: root
-    username: root
+    url: jdbc:mysql://89.47.166.199/blog?useSSL=true&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    password: blog
+    username: MYMW2eFGLayH43D6
 #控制台打印sql
 mybatis-plus:
   configuration:
