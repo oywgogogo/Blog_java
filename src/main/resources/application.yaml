@@ -4,8 +4,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     # url: jdbc:mysql://89.47.166.199/blog?useSSL=true&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     url: jdbc:mysql://89.47.166.199:3306/blog?useSSL=true&useUnicode=false
-    password: blog
-    username: MYMW2eFGLayH43D6
+    password: MYMW2eFGLayH43D6
+    username: blog
 #控制台打印sql
 mybatis-plus:
   configuration:
