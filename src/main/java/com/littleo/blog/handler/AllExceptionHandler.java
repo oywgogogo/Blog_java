@@ -20,4 +20,10 @@ public class AllExceptionHandler {
         ex.printStackTrace();
         return Result.fail(-999,"系统异常");
     }
+
+    @ExceptionHandler(TestException.class)
+    @ResponseBody
+    public Result catchException(){
+        return Result.fail(-999,"catch");
+    }
 }

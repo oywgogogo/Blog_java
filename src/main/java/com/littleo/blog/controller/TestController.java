@@ -1,5 +1,6 @@
 package com.littleo.blog.controller;
 
+import com.littleo.blog.handler.TestException;
 import com.littleo.blog.pojo.SysUser;
 import com.littleo.blog.utils.UserThreadLocal;
 import com.littleo.blog.vo.params.Result;
@@ -11,9 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
     @RequestMapping
-    public Result test(){
+    public Result test() throws TestException {
         SysUser sysUser = UserThreadLocal.get();
         System.out.println(sysUser);
-        return Result.success(null);
+        throw new TestException();
+
+//        return Result.success(null);
     }
 }
