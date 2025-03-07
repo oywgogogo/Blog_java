@@ -14,6 +14,6 @@ public class TestController {
     public Result test(){
         SysUser sysUser = UserThreadLocal.get();
         System.out.println(sysUser);
-        return Result.success(null);
+        return Result.success("测试成功");
     }
 }

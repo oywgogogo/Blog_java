@@ -32,25 +32,34 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         /*
-        * 1.判断是否为controller
-        * 2.判断是否登录（token是否为空）
-        * 3.不为空则登录验证
-        * 4.认证成功则放行
-        * */
-        if (!(handler instanceof HandlerMethod)){
+         * 1.判断是否为controller
+         * 2.判断是否登录（token是否为空）
+         * 3.不为空则登录验证
+         * 4.认证成功则放行
+         * */
+        if (!(handler instanceof HandlerMethod)) {
             //放行RequestRecourseHandler之类的请求
             return true;
         }
 
+        //放行test请求
+        String requestURI = request.getRequestURI();
+        if (requestURI.contains("/test")) {
+            log.info("=================request start===========================");
+            log.info("请求URI为："+requestURI);
+            log.info("=================request end===========================");
+            // 放行 test 请求
+            return true;
+        }
         String token = request.getHeader("authorization");
         log.info("=================request start===========================");
-        String requestURI = request.getRequestURI();
-        log.info("request uri:{}",requestURI);
-        log.info("request method:{}",request.getMethod());
+        requestURI = request.getRequestURI();
+        log.info("request uri:{}", requestURI);
+        log.info("request method:{}", request.getMethod());
         log.info("token:{}", token);
         log.info("=================request end===========================");
 
-        if (StringUtils.isBlank(token)){
+        if (StringUtils.isBlank(token)) {
             Result result = Result.fail(ErrorCode.NO_LOGIN.getCode(), "未登录");
             response.setContentType("application/json;charset=utf-8");
             response.getWriter().print(JSON.toJSONString(result));
@@ -58,7 +67,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
 
         SysUser sysUser = loginService.checkToken(token);
-        if (sysUser == null){
+        if (sysUser == null) {
             Result result = Result.fail(ErrorCode.NO_LOGIN.getCode(), "未登录");
             response.setContentType("application/json;charset=utf-8");
             response.getWriter().print(JSON.toJSONString(result));
